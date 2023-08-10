@@ -3,6 +3,7 @@ package com.example.doconlinewebviewtest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -11,12 +12,15 @@ import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 import android.webkit.ConsoleMessage;
+import android.webkit.PermissionRequest;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
+
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
@@ -181,28 +185,67 @@ public class MainActivity extends Activity {
      * Clase para configurar el chrome client para que nos permita seleccionar archivos
      */
     private class MyWebChromeClient extends WebChromeClient {
-
-
+//        @Override
+//        public void onPermissionRequest(PermissionRequest request){
+//            String[] resources = request.getResources();
+//
+//            switch (resources[0]){
+//                case PermissionRequest.RESOURCE_AUDIO_CAPTURE:
+//                    Toast.makeText(getBaseContext(), "Audio Permission", Toast.LENGTH_SHORT).show();
+//                    request.grant(new String[]{PermissionRequest.RESOURCE_AUDIO_CAPTURE});
+//                    break;
+//                case PermissionRequest.RESOURCE_MIDI_SYSEX:
+//                    Toast.makeText(getBaseContext(), "MIDI Permission", Toast.LENGTH_SHORT).show();
+//                    request.grant(new String[]{PermissionRequest.RESOURCE_MIDI_SYSEX});
+//                    break;
+//                case PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID:
+//                    Toast.makeText(getBaseContext(), "Encrypted media permission", Toast.LENGTH_SHORT).show();
+//                    request.grant(new String[]{PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID});
+//                    break;
+//                case PermissionRequest.RESOURCE_VIDEO_CAPTURE:
+//                    Toast.makeText(getBaseContext(), "Video Permission", Toast.LENGTH_SHORT).show();
+//                    request.grant(new String[]{PermissionRequest.RESOURCE_VIDEO_CAPTURE});
+//                    break;
+//            }
+//        }
+@Override
+public void onPermissionRequest(PermissionRequest request) {
+    runOnUiThread(() -> {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            String[] PERMISSIONS = {
+                    PermissionRequest.RESOURCE_AUDIO_CAPTURE,
+                    PermissionRequest.RESOURCE_VIDEO_CAPTURE
+            };
+            request.grant(PERMISSIONS);
+        }
+    });
+}
         @Override
         public boolean onCreateWindow(WebView view, boolean isDialog,
                                       boolean isUserGesture, Message resultMsg) {
 
-            WebView newWebView = new WebView(MainActivity.this);
-            view.addView(newWebView);
-            WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
-            transport.setWebView(newWebView);
-            resultMsg.sendToTarget();
-
-            newWebView.setWebViewClient(new WebViewClient() {
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW);
-                    browserIntent.setData(Uri.parse(url));
-                    startActivity(browserIntent);
-                    return true;
-                }
-            });
-            return true;
+            WebView.HitTestResult result = view.getHitTestResult();
+            String data = result.getExtra();
+            Context context = view.getContext();
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(data));
+            context.startActivity(browserIntent);
+            return false;
+//            WebView newWebView = new WebView(MainActivity.this);
+//            view.addView(newWebView);
+//            WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+//            transport.setWebView(newWebView);
+//            resultMsg.sendToTarget();
+//
+//            newWebView.setWebViewClient(new WebViewClient() {
+//                @Override
+//                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//                    Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+//                    browserIntent.setData(Uri.parse(url));
+//                    startActivity(browserIntent);
+//                    return true;
+//                }
+//            });
+//            return true;
         }
 
         // maneja la accion de seleccionar archivos
