@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.webkit.ConsoleMessage;
 import android.webkit.SslErrorHandler;
@@ -34,7 +35,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        pdfView = findViewById(R.id.pdfView);
+//        pdfView = findViewById(R.id.pdfView);
         mainWebView = findViewById(R.id.webView);
 
         mainWebView.setWebViewClient(new MyWebViewClient());
@@ -44,6 +45,8 @@ public class MainActivity extends Activity {
         mainWebView.getSettings().setPluginState(WebSettings.PluginState.ON);
         mainWebView.getSettings().setAllowFileAccess(true);
         mainWebView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+        mainWebView.getSettings().setSupportMultipleWindows(true);
+
 
         mainWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         mainWebView.getSettings().setDomStorageEnabled(true);
@@ -92,29 +95,30 @@ public class MainActivity extends Activity {
      */
     private class MyWebViewClient extends WebViewClient {
 
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
 
-            if (url.endsWith(".pdf")) {
-                // Load PDF.js and the PDF file using JavaScript
-                mainWebView.loadUrl("javascript:(function() { " +
-                        "var viewer = document.querySelector('#viewer');" +
-                        "PDFJS.getDocument('" + url + "').promise.then(function(pdf) {" +
-                        "  pdf.getPage(1).then(function(page) {" +
-                        "    var canvas = document.createElement('canvas');" +
-                        "    var scale = 1.5;" +
-                        "    var viewport = page.getViewport({scale: scale});" +
-                        "    var context = canvas.getContext('2d');" +
-                        "    canvas.height = viewport.height;" +
-                        "    canvas.width = viewport.width;" +
-                        "    viewer.appendChild(canvas);" +
-                        "    page.render({canvasContext: context, viewport: viewport});" +
-                        "  });" +
-                        "});" +
-                        "})();");
-            }
-        }
+//        @Override
+//        public void onPageFinished(WebView view, String url) {
+//            super.onPageFinished(view, url);
+//
+//            if (url.endsWith(".pdf")) {
+//                // Load PDF.js and the PDF file using JavaScript
+//                mainWebView.loadUrl("javascript:(function() { " +
+//                        "var viewer = document.querySelector('#viewer');" +
+//                        "PDFJS.getDocument('" + url + "').promise.then(function(pdf) {" +
+//                        "  pdf.getPage(1).then(function(page) {" +
+//                        "    var canvas = document.createElement('canvas');" +
+//                        "    var scale = 1.5;" +
+//                        "    var viewport = page.getViewport({scale: scale});" +
+//                        "    var context = canvas.getContext('2d');" +
+//                        "    canvas.height = viewport.height;" +
+//                        "    canvas.width = viewport.width;" +
+//                        "    viewer.appendChild(canvas);" +
+//                        "    page.render({canvasContext: context, viewport: viewport});" +
+//                        "  });" +
+//                        "});" +
+//                        "})();");
+//            }
+//        }
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Uri uri = Uri.parse(url);
@@ -140,15 +144,15 @@ public class MainActivity extends Activity {
                 // Handle CloudFront signed URLs here, such as displaying a message or redirecting
                 // to a different page, as necessary.
                 // Load the PDF using the URL
-                pdfView.fromUri(Uri.parse(url))
-                        .onLoad(new OnLoadCompleteListener() {
-                            @Override
-                            public void loadComplete(int nbPages) {
-                                // PDF has been loaded, you can implement any necessary logic here
-                            }
-                        })
-                        .scrollHandle(new DefaultScrollHandle(MainActivity.this))
-                        .load();
+//                pdfView.fromUri(Uri.parse(url))
+//                        .onLoad(new OnLoadCompleteListener() {
+//                            @Override
+//                            public void loadComplete(int nbPages) {
+//                                // PDF has been loaded, you can implement any necessary logic here
+//                            }
+//                        })
+//                        .scrollHandle(new DefaultScrollHandle(MainActivity.this))
+//                        .load();
 
 //                view.loadUrl(url);
                 return true;
@@ -177,6 +181,29 @@ public class MainActivity extends Activity {
      * Clase para configurar el chrome client para que nos permita seleccionar archivos
      */
     private class MyWebChromeClient extends WebChromeClient {
+
+
+        @Override
+        public boolean onCreateWindow(WebView view, boolean isDialog,
+                                      boolean isUserGesture, Message resultMsg) {
+
+            WebView newWebView = new WebView(MainActivity.this);
+            view.addView(newWebView);
+            WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+            transport.setWebView(newWebView);
+            resultMsg.sendToTarget();
+
+            newWebView.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+                    browserIntent.setData(Uri.parse(url));
+                    startActivity(browserIntent);
+                    return true;
+                }
+            });
+            return true;
+        }
 
         // maneja la accion de seleccionar archivos
         @Override
