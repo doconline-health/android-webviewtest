@@ -29,7 +29,6 @@ public class MainActivity extends Activity {
 
     private final static int FILECHOOSER_RESULTCODE = 1;
     private ValueCallback<Uri[]> mUploadMessage;
-    private PDFView pdfView;
     WebView mainWebView;
 
 
@@ -59,7 +58,7 @@ public class MainActivity extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mainWebView.getSettings().setSafeBrowsingEnabled(true);
         }
-        mainWebView.loadUrl("https://demo.doconline.com");
+        mainWebView.loadUrl("https://app.doconline.com");
 
 //        settings.domStorageEnabled = true
 //        settings.allowContentAccess = true
@@ -68,7 +67,9 @@ public class MainActivity extends Activity {
 
     }
 
-
+    /**
+     file chooser in file upload
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
@@ -96,7 +97,7 @@ public class MainActivity extends Activity {
     // ====================
 
     /**
-     * Clase para configurar el webview
+    custom webview configuration
      */
     private class MyWebViewClient extends WebViewClient {
 
@@ -166,24 +167,13 @@ public class MainActivity extends Activity {
                 return false;
             }
 
-
-
-
-
-
         }
 
-        // permite la navegacion dentro del webview
-//        @Override
-//        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//            view.loadUrl(url);
-//            return true;
-//        }
     }
 
 
     /**
-     * Clase para configurar el chrome client para que nos permita seleccionar archivos
+
      */
     private class MyWebChromeClient extends WebChromeClient {
 //        @Override
@@ -216,11 +206,14 @@ public void onPermissionRequest(PermissionRequest request) {
             String[] PERMISSIONS = {
                     PermissionRequest.RESOURCE_AUDIO_CAPTURE,
                     PermissionRequest.RESOURCE_VIDEO_CAPTURE
+
             };
             request.grant(PERMISSIONS);
         }
     });
 }
+
+        // this code snippet for handling file view PDF/excel in the webview //
         @Override
         public boolean onCreateWindow(WebView view, boolean isDialog,
                                       boolean isUserGesture, Message resultMsg) {
@@ -249,7 +242,7 @@ public void onPermissionRequest(PermissionRequest request) {
             return true;
         }
 
-        // maneja la accion de seleccionar archivos
+        // this code snippet for handling file uploading in the webview //
         @Override
         public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
 
@@ -270,6 +263,17 @@ public void onPermissionRequest(PermissionRequest request) {
         }
     }
 
+// this code snippet for handling back button in the webview //
+    @Override
+    public void onBackPressed() {
+        if (mainWebView.copyBackForwardList().getCurrentIndex() > 0) {
+            mainWebView.goBack();
+        }
+        else {
+            // Your exit alert code, or alternatively line below to finish
+            super.onBackPressed(); // finishes activity
+        }
+    }
 }
 //import android.os.Bundle;
 //
