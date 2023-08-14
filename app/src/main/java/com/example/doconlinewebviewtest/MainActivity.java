@@ -51,6 +51,7 @@ public class MainActivity extends Activity {
         mainWebView.getSettings().setMediaPlaybackRequiresUserGesture(false);
         mainWebView.getSettings().setSupportMultipleWindows(true);
 
+        mainWebView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
 
         mainWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         mainWebView.getSettings().setDomStorageEnabled(true);
@@ -224,28 +225,28 @@ public void onPermissionRequest(PermissionRequest request) {
         public boolean onCreateWindow(WebView view, boolean isDialog,
                                       boolean isUserGesture, Message resultMsg) {
 
-            WebView.HitTestResult result = view.getHitTestResult();
-            String data = result.getExtra();
-            Context context = view.getContext();
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(data));
-            context.startActivity(browserIntent);
-            return false;
-//            WebView newWebView = new WebView(MainActivity.this);
-//            view.addView(newWebView);
-//            WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
-//            transport.setWebView(newWebView);
-//            resultMsg.sendToTarget();
-//
-//            newWebView.setWebViewClient(new WebViewClient() {
-//                @Override
-//                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//                    Intent browserIntent = new Intent(Intent.ACTION_VIEW);
-//                    browserIntent.setData(Uri.parse(url));
-//                    startActivity(browserIntent);
-//                    return true;
-//                }
-//            });
-//            return true;
+//            WebView.HitTestResult result = view.getHitTestResult();
+//            String data = result.getExtra();
+//            Context context = view.getContext();
+//            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(data));
+//            context.startActivity(browserIntent);
+//            return false;
+            WebView newWebView = new WebView(MainActivity.this);
+            view.addView(newWebView);
+            WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+            transport.setWebView(newWebView);
+            resultMsg.sendToTarget();
+
+            newWebView.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+                    browserIntent.setData(Uri.parse(url));
+                    startActivity(browserIntent);
+                    return true;
+                }
+            });
+            return true;
         }
 
         // maneja la accion de seleccionar archivos

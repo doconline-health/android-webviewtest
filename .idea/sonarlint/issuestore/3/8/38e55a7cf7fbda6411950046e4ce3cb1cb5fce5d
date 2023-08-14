@@ -1,0 +1,23 @@
+
+s	java:S117Ø"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÏÛ®Ñûÿÿÿÿ8œŞÿ1
+b
+java:S1124"EReorder the modifiers to comply with the Java Language Specification.(­ŠÙİ8äã¶ş1
+]	java:S125*"<This block of commented-out lines of code should be removed.(Ÿßüûÿÿÿÿ8‹ãÅş1
+X
+java:S18741"6Remove this use of "setPluginState"; it is deprecated.(‡œ†°şÿÿÿÿ8åã¶ş1
+m
+java:S1874€"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(µÛÎ°üÿÿÿÿ8ÔÃÏş1
+X	java:S125i"<This block of commented-out lines of code should be removed.(ÒŞü˜8·Ğş1
+^	java:S125„"<This block of commented-out lines of code should be removed.(Úß±øÿÿÿÿ8èã¶ş1
+_
+java:S1126”"AReplace this if-then-else statement by a single return statement.(ò¹º÷8ãÊÆş1
+Y	java:S125™"<This block of commented-out lines of code should be removed.(ŒÇèè8ãÊÆş1
+^	java:S125¢"<This block of commented-out lines of code should be removed.(š©…Ñùÿÿÿÿ8êã¶ş1
+Y	java:S125²"<This block of commented-out lines of code should be removed.(¿‹ÿÆ8êã¶ş1
+Y	java:S125¾"<This block of commented-out lines of code should be removed.(ØÒôÁ8’‡Şÿ1
+Y	java:S125ä"<This block of commented-out lines of code should be removed.(°ßãŞ8é¥Ü£1
+m
+java:S1874ò"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(µÛÎ°üÿÿÿÿ8Áˆİ£1
+Y	java:S125’"<This block of commented-out lines of code should be removed.(™…ÌŞ8ÉœŞÿ1
+H
+java:S1068 "+Remove this unused "pdfView" private field.(İ˜Ñ 8èÊÆş1
