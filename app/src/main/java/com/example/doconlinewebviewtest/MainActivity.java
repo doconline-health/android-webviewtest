@@ -21,10 +21,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import com.github.barteksc.pdfviewer.PDFView;
-import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
-import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
-import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 public class MainActivity extends Activity {
 
     private final static int FILECHOOSER_RESULTCODE = 1;
@@ -38,7 +34,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-//        pdfView = findViewById(R.id.pdfView);
+
         mainWebView = findViewById(R.id.webView);
 
         mainWebView.setWebViewClient(new MyWebViewClient());
@@ -58,7 +54,7 @@ public class MainActivity extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mainWebView.getSettings().setSafeBrowsingEnabled(true);
         }
-        mainWebView.loadUrl("https://app.doconline.com");
+        mainWebView.loadUrl("https://demo.doconline.com");
 
 //        settings.domStorageEnabled = true
 //        settings.allowContentAccess = true
